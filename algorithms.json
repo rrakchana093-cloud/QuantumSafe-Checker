@@ -1,0 +1,290 @@
+{
+  "algorithms": [
+    {
+      "id": "RSA",
+      "name": "RSA",
+      "aliases": ["RSA", "RSA-2048", "RSA-3072", "RSA-4096", "PKCS1", "PKCS#1"],
+      "family": "Public-key cryptography (Integer Factorization)",
+      "cryptographic_role": "asymmetric_encryption_and_signature",
+      "standardization_status": "standardized_classical",
+      "status_label": "Legacy Standard (Classical)",
+      "description": "Widely used for asymmetric key exchange, key encapsulation/transport, and digital signatures.",
+      "supported_roles": ["key_establishment", "digital_signature"],
+      "valid_use_cases": [
+        "TLS key exchange",
+        "Digital signatures",
+        "Certificate authentication",
+        "Data encryption"
+      ],
+      "base_risk": "High risk",
+      "prioritization_score": 95,
+      "score_rationale": "High application-defined prioritization score (95/100) reflects complete exposure to Shor's algorithm on a cryptographically relevant quantum computer.",
+      "explanation": "RSA relies on the computational hardness of factoring large composite integers into prime factors. A sufficiently capable, fault-tolerant quantum computer running Shor's algorithm can factor integers in polynomial time O((log N)^3), completely breaking both RSA encryption/key transport and RSA digital signatures.",
+      "quantum_threat": "Shor's algorithm for prime factorization efficiently derives private keys from public keys, enabling complete decryption of intercepted traffic and signature forgery.",
+      "alternative": "ML-KEM (NIST FIPS 203) for key establishment/key transport; ML-DSA (NIST FIPS 204) or SLH-DSA (NIST FIPS 205) for digital signatures.",
+      "reference": {
+        "standard_id": "NIST IR 8547",
+        "title": "Transition to Post-Quantum Cryptography Standards (Initial Public Draft)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/ir/8547/ipd"
+      }
+    },
+    {
+      "id": "ECDH",
+      "name": "ECDH",
+      "aliases": ["ECDH", "ECDHE", "X25519", "SECP256R1", "P-256", "P-384", "P-521"],
+      "family": "Elliptic-curve key exchange",
+      "cryptographic_role": "key_establishment",
+      "standardization_status": "standardized_classical",
+      "status_label": "Standardized (Classical)",
+      "description": "Establishes shared secrets across untrusted channels using elliptic-curve point multiplication.",
+      "supported_roles": ["key_establishment"],
+      "valid_use_cases": [
+        "TLS key exchange",
+        "Secure messaging",
+        "VPN key exchange"
+      ],
+      "base_risk": "High risk",
+      "prioritization_score": 95,
+      "score_rationale": "High application-defined prioritization score (95/100) due to complete vulnerability to Shor's discrete logarithm attack and susceptibility to 'harvest now, decrypt later' adversary strategies.",
+      "explanation": "ECDH depends on the difficulty of the Elliptic Curve Discrete Logarithm Problem (ECDLP). Because elliptic curves require relatively small key sizes compared to RSA, a quantum computer requires fewer physical/logical qubits to solve ECDLP with Shor's algorithm, breaking all forward secrecy established with classical ECDH.",
+      "quantum_threat": "Shor's algorithm for discrete logarithms recovers elliptic-curve private keys in polynomial time, compromising session keys and recorded encrypted traffic.",
+      "alternative": "ML-KEM (NIST FIPS 203) for post-quantum key encapsulation; consider hybrid schemes (e.g. X25519 + ML-KEM-768) during transition.",
+      "reference": {
+        "standard_id": "NIST FIPS 203",
+        "title": "Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/203/final"
+      }
+    },
+    {
+      "id": "ECDSA",
+      "name": "ECDSA",
+      "aliases": ["ECDSA", "ED25519", "ED448", "ECDSA-P256", "ECDSA-P384"],
+      "family": "Elliptic-curve digital signatures",
+      "cryptographic_role": "digital_signature",
+      "standardization_status": "standardized_classical",
+      "status_label": "Standardized (Classical)",
+      "description": "Creates compact digital signatures and authenticity guarantees using elliptic-curve cryptography.",
+      "supported_roles": ["digital_signature"],
+      "valid_use_cases": [
+        "Code signing",
+        "Certificate authentication",
+        "Document signing",
+        "Transaction signing"
+      ],
+      "base_risk": "High risk",
+      "prioritization_score": 90,
+      "score_rationale": "Application-defined prioritization score (90/100) reflecting that Shor's algorithm permits private key derivation from public keys, enabling arbitrary signature forging once a cryptographically relevant quantum computer exists.",
+      "explanation": "Like ECDH, ECDSA's mathematical foundation is the Elliptic Curve Discrete Logarithm Problem (ECDLP). Shor's algorithm provides an efficient polynomial-time solution for ECDLP. A quantum adversary can extract the private signing key directly from the public verification key.",
+      "quantum_threat": "Shor's discrete logarithm solver derives the private signing key, permitting retroactive and active forgery of digital certificates, firmware updates, and documents.",
+      "alternative": "ML-DSA (NIST FIPS 204) for general signatures or SLH-DSA (NIST FIPS 205) for high-assurance firmware and root signing.",
+      "reference": {
+        "standard_id": "NIST FIPS 204",
+        "title": "Module-Lattice-Based Digital Signature Standard (ML-DSA)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/204/final"
+      }
+    },
+    {
+      "id": "AES",
+      "name": "AES",
+      "aliases": ["AES", "AES-128", "AES-192", "AES-256", "RIJNDAEL", "AES-GCM", "AES-CBC"],
+      "family": "Symmetric block cipher",
+      "cryptographic_role": "symmetric_encryption",
+      "standardization_status": "standardized_classical",
+      "status_label": "Standardized (Symmetric Classical)",
+      "description": "A modern symmetric cipher utilized worldwide to protect bulk data at rest and data in transit.",
+      "supported_roles": ["symmetric_encryption"],
+      "valid_use_cases": [
+        "Data at rest",
+        "Application encryption",
+        "Backup encryption",
+        "Secure transport"
+      ],
+      "base_risk": "Lower quantum risk",
+      "prioritization_score": 30,
+      "score_rationale": "Lower application-defined prioritization score (30/100). AES is immune to Shor's algorithm; Grover's algorithm only provides quadratic speedup, which is effectively mitigated by AES-256.",
+      "explanation": "Symmetric ciphers do not rely on abelian group structure or number-theoretic trapdoors. Shor's algorithm is ineffective against AES. Grover's quantum search algorithm provides a quadratic speedup for unstructured brute-force searches (O(2^(n/2)) operations). This reduces 128-bit keys to 64 bits of security, but leaves AES-256 with 128 bits of quantum security margin.",
+      "quantum_threat": "Grover's algorithm accelerates brute-force search quadratically. While AES-128 is weakened to 64 bits of effective security, AES-256 remains secure with 128 bits of post-quantum work factor.",
+      "alternative": "Ensure deployment uses AES-256 with robust authenticated modes (e.g., GCM) and sound quantum-safe key exchange.",
+      "reference": {
+        "standard_id": "NIST SP 800-57 Pt. 1 Rev. 5",
+        "title": "Recommendation for Key Management: Part 1 – General (Section 5.6.2)",
+        "published": "2020",
+        "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final"
+      }
+    },
+    {
+      "id": "ML-KEM",
+      "name": "ML-KEM",
+      "aliases": ["ML-KEM", "MLKEM", "ML-KEM-512", "ML-KEM-768", "ML-KEM-1024", "FIPS203"],
+      "family": "Post-quantum key establishment (Lattice-based)",
+      "cryptographic_role": "key_establishment",
+      "standardization_status": "standardized_pqc",
+      "status_label": "NIST Standardized PQC (FIPS 203)",
+      "description": "The standardized module-lattice-based key encapsulation mechanism derived from CRYSTALS-Kyber.",
+      "supported_roles": ["key_establishment"],
+      "valid_use_cases": [
+        "TLS key establishment",
+        "Hybrid key exchange",
+        "Secure messaging"
+      ],
+      "base_risk": "Quantum-safe",
+      "prioritization_score": 10,
+      "score_rationale": "Low application-defined prioritization score (10/100). Fully standardized and designed to resist both classical and quantum algorithmic attacks.",
+      "explanation": "ML-KEM is built on the hardness of the Module Learning With Errors (M-LWE) problem over algebraic lattices. Decades of quantum algorithm research have found no polynomial-time quantum algorithm to solve lattice shortest vector or learning with errors problems.",
+      "quantum_threat": "No known practical quantum or classical attack against the standardized parameter sets (ML-KEM-512, 768, 1024) when implemented with side-channel countermeasures.",
+      "alternative": "No replacement required; implement parameter set ML-KEM-768 (Security Category 3) or ML-KEM-1024 (Category 5) per NIST FIPS 203.",
+      "reference": {
+        "standard_id": "NIST FIPS 203",
+        "title": "Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/203/final"
+      }
+    },
+    {
+      "id": "ML-DSA",
+      "name": "ML-DSA",
+      "aliases": ["ML-DSA", "MLDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87", "FIPS204"],
+      "family": "Post-quantum digital signatures (Lattice-based)",
+      "cryptographic_role": "digital_signature",
+      "standardization_status": "standardized_pqc",
+      "status_label": "NIST Standardized PQC (FIPS 204)",
+      "description": "The standardized module-lattice-based digital signature algorithm derived from CRYSTALS-Dilithium.",
+      "supported_roles": ["digital_signature"],
+      "valid_use_cases": [
+        "Code signing",
+        "Document signing",
+        "Certificate authentication"
+      ],
+      "base_risk": "Quantum-safe",
+      "prioritization_score": 10,
+      "score_rationale": "Low application-defined prioritization score (10/100). Formally standardized primary digital signature algorithm for general post-quantum cryptography.",
+      "explanation": "ML-DSA is based on the hardness of the Module Learning with Errors (M-LWE) and Module Short Integer Solution (M-SIS) problems in module lattices. It does not possess the algebraic periodicity exploited by quantum Fourier transforms.",
+      "quantum_threat": "No practical quantum attack is known against M-LWE/M-SIS under standardized parameters. Note: as with all cryptosystems, implementation must guard against classical side-channel and fault attacks.",
+      "alternative": "No replacement required; select ML-DSA-65 (NIST Security Category 3) or ML-DSA-87 (Category 5) per NIST FIPS 204.",
+      "reference": {
+        "standard_id": "NIST FIPS 204",
+        "title": "Module-Lattice-Based Digital Signature Standard (ML-DSA)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/204/final"
+      }
+    },
+    {
+      "id": "SLH-DSA",
+      "name": "SLH-DSA",
+      "aliases": ["SLH-DSA", "SLHDSA", "SPHINCS+", "SPHINCS-PLUS", "FIPS205"],
+      "family": "Post-quantum digital signatures (Stateless Hash-based)",
+      "cryptographic_role": "digital_signature",
+      "standardization_status": "standardized_pqc",
+      "status_label": "NIST Standardized PQC (FIPS 205)",
+      "description": "A conservative, stateless hash-based digital signature scheme derived from SPHINCS+.",
+      "supported_roles": ["digital_signature"],
+      "valid_use_cases": [
+        "Firmware signing",
+        "Long-lived signatures",
+        "Root-of-trust signing"
+      ],
+      "base_risk": "Quantum-safe",
+      "prioritization_score": 5,
+      "score_rationale": "Lowest application-defined prioritization score (5/100). Relies on conservative cryptographic hash assumptions with no lattice vulnerability risks.",
+      "explanation": "SLH-DSA relies solely on the security properties of standard cryptographic hash functions (preimage, second-preimage, and collision resistance). Because it relies on minimal mathematical assumptions, it serves as an essential hedge against potential future algebraic breakthroughs in lattice cryptography.",
+      "quantum_threat": "Quantum computers accelerate hash preimage searches quadratically via Grover's algorithm. SLH-DSA parameter sets (e.g. SLH-DSA-128s, 256f) explicitly account for quantum search bounds.",
+      "alternative": "No replacement required; ideal for root certificates and firmware signing where signature verification is fast and larger signature bytes are tolerable.",
+      "reference": {
+        "standard_id": "NIST FIPS 205",
+        "title": "Stateless Hash-Based Digital Signature Standard (SLH-DSA)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/205/final"
+      }
+    },
+    {
+      "id": "KYBER",
+      "name": "CRYSTALS-Kyber (Legacy / Pre-Standard)",
+      "aliases": ["KYBER", "CRYSTALS-KYBER", "KYBER-512", "KYBER-768", "KYBER-1024"],
+      "family": "Lattice-based key encapsulation (NIST Round 3 Submission)",
+      "cryptographic_role": "key_establishment",
+      "standardization_status": "legacy_predecessor",
+      "status_label": "Legacy Predecessor to ML-KEM",
+      "successor_standard": "ML-KEM (NIST FIPS 203)",
+      "description": "The Round 3 NIST PQC candidate algorithm that was refined and finalized into NIST FIPS 203 (ML-KEM).",
+      "supported_roles": ["key_establishment"],
+      "valid_use_cases": [
+        "TLS key establishment",
+        "Hybrid key exchange",
+        "Secure messaging"
+      ],
+      "base_risk": "Lower quantum risk",
+      "prioritization_score": 45,
+      "score_rationale": "Moderate application-defined prioritization score (45/100) due to interoperability and standard compliance debt. Not quantum-vulnerable, but draft implementations diverge from final FIPS 203.",
+      "explanation": "CRYSTALS-Kyber is mathematically resistant to quantum attacks. However, it is a pre-standardization specification. In August 2024, NIST released FIPS 203 (ML-KEM), which modified the key derivation function (KDF) domain separators, parameter validations, and encapsulation output formatting. Round 3 Kyber binaries and wire protocols are incompatible with final FIPS 203.",
+      "quantum_threat": "No mathematical quantum vulnerability, but using pre-standard Kyber incurs critical technical debt, lack of FIPS certification, and protocol interoperability failures.",
+      "alternative": "Upgrade from pre-standard Kyber to standardized ML-KEM (NIST FIPS 203).",
+      "reference": {
+        "standard_id": "NIST FIPS 203",
+        "title": "Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM - Historical Note)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/203/final"
+      }
+    },
+    {
+      "id": "DILITHIUM",
+      "name": "CRYSTALS-Dilithium (Legacy / Pre-Standard)",
+      "aliases": ["DILITHIUM", "CRYSTALS-DILITHIUM", "DILITHIUM2", "DILITHIUM3", "DILITHIUM5"],
+      "family": "Lattice-based digital signatures (NIST Round 3 Submission)",
+      "cryptographic_role": "digital_signature",
+      "standardization_status": "legacy_predecessor",
+      "status_label": "Legacy Predecessor to ML-DSA",
+      "successor_standard": "ML-DSA (NIST FIPS 204)",
+      "description": "The Round 3 NIST PQC candidate signature scheme that was refined and standardized as NIST FIPS 204 (ML-DSA).",
+      "supported_roles": ["digital_signature"],
+      "valid_use_cases": [
+        "Code signing",
+        "Document signing",
+        "Certificate authentication"
+      ],
+      "base_risk": "Lower quantum risk",
+      "prioritization_score": 45,
+      "score_rationale": "Moderate application-defined prioritization score (45/100) due to protocol incompatibility with official FIPS 204 standards.",
+      "explanation": "CRYSTALS-Dilithium resists quantum attacks on module lattices. However, NIST's finalized FIPS 204 standard introduced modifications to hashing domain separation, context strings, and key formatting. Pre-standard Dilithium artifacts will not validate under standardized FIPS 204 verifiers.",
+      "quantum_threat": "No known mathematical quantum exploit, but deployment risks include compliance failure, missing FIPS validation, and incompatibility with standard PKI systems.",
+      "alternative": "Upgrade implementations from Round 3 Dilithium to finalized ML-DSA (NIST FIPS 204).",
+      "reference": {
+        "standard_id": "NIST FIPS 204",
+        "title": "Module-Lattice-Based Digital Signature Standard (ML-DSA - Historical Note)",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/pubs/fips/204/final"
+      }
+    },
+    {
+      "id": "FALCON",
+      "name": "Falcon (Candidate in Progress)",
+      "aliases": ["FALCON", "FALCON-512", "FALCON-1024", "FN-DSA"],
+      "family": "NTRU lattice-based digital signatures (Fast-Fourier Orthogonalization)",
+      "cryptographic_role": "digital_signature",
+      "standardization_status": "candidate_in_progress",
+      "status_label": "NIST Standardization In Progress (FN-DSA)",
+      "successor_standard": "Forthcoming FN-DSA (NIST Draft expected 2025/2026)",
+      "description": "A lattice signature based on NTRU with very compact signatures and fast verification, currently being finalized by NIST into the forthcoming FN-DSA standard.",
+      "supported_roles": ["digital_signature"],
+      "valid_use_cases": [
+        "Code signing",
+        "Document signing",
+        "Certificate authentication"
+      ],
+      "base_risk": "Lower quantum risk",
+      "prioritization_score": 40,
+      "score_rationale": "Application-defined prioritization score (40/100) reflecting non-standardized status. While quantum-resistant, implementation without final NIST FIPS parameters risks obsolescence.",
+      "explanation": "Falcon provides compact signatures and very fast verification by utilizing Gaussian sampling over NTRU lattices. While selected for standardization, NIST prioritized ML-DSA and SLH-DSA for immediate release in 2024. Falcon's draft standard (designated FN-DSA) is slated for publication in 2025/2026. Constant-time floating-point operations in Falcon also present high implementation complexity.",
+      "quantum_threat": "No mathematical quantum attacks are known against its NTRU lattice foundation. The primary risks are implementation pitfalls (timing attacks in non-constant-time floating-point arithmetic) and lack of a finalized standard.",
+      "alternative": "Deploy standardized ML-DSA (FIPS 204) or SLH-DSA (FIPS 205) today; monitor NIST's upcoming FN-DSA standard if compact signature size is strictly mandatory.",
+      "reference": {
+        "standard_id": "NIST PQC Standardization Status",
+        "title": "Post-Quantum Cryptography: Falcon & Forthcoming FN-DSA Standard",
+        "published": "2024",
+        "url": "https://csrc.nist.gov/projects/post-quantum-cryptography"
+      }
+    }
+  ]
+}
