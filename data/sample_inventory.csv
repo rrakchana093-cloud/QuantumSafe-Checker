@@ -1,0 +1,9 @@
+asset_name,algorithm,use_case,notes
+Website Certificate,RSA,digital_signature,Public website
+Internal Key Exchange,ECDH,key_establishment,Internal service
+Document Signing,ECDSA,digital_signature,Document workflow
+Data Encryption,AES-256,symmetric_encryption,Stored data
+Legacy Key Exchange,ECDH,key_establishment,Legacy service
+Post-Quantum Key Exchange,ML-KEM,key_establishment,Test deployment
+New Signing Service,ML-DSA,digital_signature,Test deployment
+Secure Archive,AES-128,symmetric_encryption,Archive storage
