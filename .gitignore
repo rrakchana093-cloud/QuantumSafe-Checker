@@ -1,6 +1,24 @@
+# Python
 .venv/
 venv/
 __pycache__/
 .pytest_cache/
 *.py[cod]
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+
+# Frontend dependencies and builds
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# Local tools and caches
+.cache/
+.figma/
+.vscode/
+*.log
